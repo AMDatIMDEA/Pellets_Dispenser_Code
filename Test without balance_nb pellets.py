@@ -57,7 +57,6 @@ setMotorSpeed('b',300,50)
 # In[ ]:
 
 
-while compt < 1000:
    data_read = arduino.readline().decode()[:-2]  # Recovery of time when the sensor is broken
    rawdata.append(data_read)  # add items to the end of rawdata list
    if int(rawdata[-1]) < limit:  # if the time is under the limit, it means than 1 pellets go in the hole
