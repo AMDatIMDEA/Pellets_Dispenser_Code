@@ -92,3 +92,46 @@ def SetupDispenser(dispenser_setup_file, Polymer):
             A[i] = additive[i+1]
             
     return dispensers_map, M, A
+
+def Compositions(compositions_file, dispensers_map, M, A, Polymer): 
+    
+    """
+    Funtion to read the compositions file and define what compositions to dispense.
+    
+    Inputs:
+    
+        compositions_file: full route of a .csv file with the ddesired compositions. Example:
+            Composition,PLA,GNP,CLO,BN
+            1,0.95,0.02,0.0,0.03
+            2,0.95,0.04,0.0,0.01
+            
+        dispensers_map, M, A: arrays returned from SetupDispenser function. 
+        
+    Outputs:
+        
+        C: list of arrays with the quantities to dispense from each dispenser for every composition in the file.
+        
+    
+    """
+    compositions = pd.read_csv(compositions_file, comment='#')
+    compositions_array = []
+
+    for index, row in compositions.iterrows():
+        non_zero_elements = [(col, value) for col, value in row.items() if (value != 0 and col != "Composition")]
+        X = np.zeros(8)
+        for element in non_zero_elements:
+            X[dispensers_map[element[0]]-1] = element[1]
+        C = np.zeros(8)
+        polymer = dispensers_map[Polymer]
+        for i in range(len(C)):
+            if A[i] > tol:
+                C[i] = X[i]/A[i]
+        C[polymer-1] = X[polymer-1] - np.sum(C * M)
+        if 1-np.sum(X) < tol:
+            print('Composition ', index,': Concentrations add up.')
+        else:
+            print('WARNING: Concentrations in composition ', index,' do not add up.')
+            print('**************************************')
+            print('Check user input before continuing.')
+        compositions_array.append(C)
+    return compositions_array
