@@ -18,3 +18,4 @@ data: input data for the example notebook.
 
 src: Python libraries and Arduino code.
 
+https://github.com/AMDatIMDEA/Pellets_Dispenser_Code/blob/main/Dispensomixer%2Bcollector.mp4
